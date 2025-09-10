@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { commonPasswords } from "@/lib/utils";
 
 interface VisionSectionProps {
   onPasswordSubmit: (password: string) => void;
@@ -11,8 +13,18 @@ interface VisionSectionProps {
 const VisionSection = ({ onPasswordSubmit }: VisionSectionProps) => {
   const [password, setPassword] = useState("");
   const [showScreenReader, setShowScreenReader] = useState(false);
+  const [correctPassword] = useState<string>(() => {
+    const idx = Math.floor(Math.random() * commonPasswords.length);
+    return commonPasswords[idx].toUpperCase();
+  });
 
-  const correctPassword = "VISION";
+  // Expose the current correct password on window for debugging/use in console
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      (window as any).correctPassword = correctPassword;
+      (window as any).correctPasswordUpper = correctPassword.toUpperCase();
+    }
+  }, [correctPassword]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,7 +69,7 @@ const VisionSection = ({ onPasswordSubmit }: VisionSectionProps) => {
               The minimum contrast ratio should be 4.5:1 for normal text and 3:1 for large text.
             </p>
             <p>
-              <span className="sr-only">Password: VISION</span>
+              <VisuallyHidden>Your password is: {correctPassword.toUpperCase()}</VisuallyHidden>
               The password for this section is hidden somewhere in this text but you cannot see it due to 
               the poor contrast. This demonstrates why proper contrast ratios are essential for accessibility.
             </p>
@@ -66,30 +78,6 @@ const VisionSection = ({ onPasswordSubmit }: VisionSectionProps) => {
               contrast to navigate digital content effectively.
             </p>
           </div>
-        </div>
-
-        {/* Screen Reader Simulation */}
-        <div className="space-y-4">
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={() => setShowScreenReader(!showScreenReader)}
-          >
-            {showScreenReader ? "🔊 Disable" : "🔇 Enable"} Screen Reader Simulation
-          </Button>
-
-          {showScreenReader && (
-            <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm animate-bounce-in">
-              <div className="mb-2 text-green-300">Screen Reader Output:</div>
-              <div className="space-y-1">
-                <p>"Heading level 3: Important Information"</p>
-                <p>"Welcome to our accessibility workshop. This section demonstrates how poor color contrast affects users..."</p>
-                <p>"Many websites fail to meet WCAG contrast requirements, making content difficult or impossible to read..."</p>
-                <p>"Password: V-I-S-I-O-N. The password for this section is hidden somewhere in this text..."</p>
-                <p>"Users with visual impairments rely on screen readers, magnification software..."</p>
-              </div>
-            </div>
-          )}
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

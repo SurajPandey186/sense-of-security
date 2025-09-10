@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { commonPasswords } from "@/lib/utils";
 
 interface MotorSectionProps {
   onPasswordSubmit: (password: string) => void;
@@ -12,8 +13,18 @@ const MotorSection = ({ onPasswordSubmit }: MotorSectionProps) => {
   const [password, setPassword] = useState("");
   const [currentFocus, setCurrentFocus] = useState(0);
   const [isMouseDisabled, setIsMouseDisabled] = useState(false);
+  const [correctPassword] = useState<string>(() => {
+    const idx = Math.floor(Math.random() * commonPasswords.length);
+    return commonPasswords[idx].toUpperCase();
+  });
   
-  const correctPassword = "KEYBOARD";
+  // Expose the current correct password on window for debugging/use in console
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      (window as any).motorCorrectPassword = correctPassword;
+      (window as any).motorCorrectPasswordUpper = correctPassword.toUpperCase();
+    }
+  }, [correctPassword]);
   
   const focusableElements = [
     "enable-keyboard-btn",
@@ -71,7 +82,7 @@ const MotorSection = ({ onPasswordSubmit }: MotorSectionProps) => {
     }
   };
 
-  const letters = ['K', 'E', 'Y', 'B', 'O', 'A', 'R', 'D'];
+  const letters = correctPassword.split('');
 
   return (
     <div className="workshop-section">
