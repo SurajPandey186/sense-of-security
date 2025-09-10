@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface CognitiveSectionProps {
   onPasswordSubmit: (password: string) => void;
@@ -26,15 +28,17 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
     childhoodFriend: "",
     dreamJob: ""
   });
-  
+
   const [currentPopup, setCurrentPopup] = useState<PopupProblem | null>(null);
   const [popupAnswer, setPopupAnswer] = useState("");
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(10);
   const [isActive, setIsActive] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const { toast } = useToast();
 
-  
+
 
   const problems: PopupProblem[] = [
     { id: 1, type: 'math', question: 'What is 15 × 7?', answer: '105' },
@@ -71,7 +75,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
       intervalRef.current = setInterval(() => {
         generatePopup();
       }, 10000);
-      
+
       // Generate first popup after 3 seconds
       setTimeout(generatePopup, 3000);
     }
@@ -96,23 +100,64 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
     setFormData({ ...formData, [field]: value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Check if form is complete
     const requiredFields = ['name', 'favoriteDishes', 'favoritePlaces', 'petName'];
     const isComplete = requiredFields.every(field => formData[field as keyof typeof formData].trim() !== '');
-    
+
     if (!isComplete) {
-      alert('Please fill in all required fields while managing the popup distractions!');
+      toast({
+        title: "Incomplete Form",
+        description: "Please fill in all required fields while managing the popup distractions!",
+        variant: "destructive",
+      });
       return;
     }
 
+    setIsSubmitting(true);
     setIsActive(false);
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
-    onPasswordSubmit('COMPLETED');
+
+    try {
+      // Store form data in Supabase
+      const { error } = await supabase
+        .from('leaderboard')
+        .insert([{
+          name: formData.name,
+          email: `${formData.name.toLowerCase().replace(/\s+/g, '')}@example.com`, // Generate email from name
+          favorite_dishes: formData.favoriteDishes,
+          favorite_places: formData.favoritePlaces,
+          pet_name: formData.petName,
+          childhood_friend: formData.childhoodFriend,
+          dream_job: formData.dreamJob,
+          cognitive_score: score,
+          score: score // Keep score for compatibility
+        }]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success!",
+        description: "Your form has been submitted and added to the leaderboard!",
+      });
+
+      onPasswordSubmit('COMPLETED');
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast({
+        title: "Error",
+        description: "Failed to submit form. Please try again.",
+        variant: "destructive",
+      });
+      // Re-enable the challenge if submission failed
+      setIsActive(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const startChallenge = () => {
@@ -149,7 +194,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
           <div className="relative">
             <div className="mb-4 p-3 bg-muted rounded-lg">
               <p className="text-sm">
-                <strong>Distractions handled:</strong> {score} | 
+                <strong>Distractions handled:</strong> {score} |
                 <strong> Status:</strong> {currentPopup ? 'Popup Active!' : 'Focus on form'}
               </p>
             </div>
@@ -166,7 +211,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
                     placeholder="Enter your full name"
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="petName">Pet's Name *</Label>
                   <Input
@@ -212,7 +257,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
                     placeholder="Your childhood friend's name"
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="dreamJob">Dream Job</Label>
                   <Input
@@ -226,8 +271,8 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
               </div>
 
               <div className="flex justify-center">
-                <Button type="submit" variant="workshop" size="lg">
-                  Submit Complete Form
+                <Button type="submit" variant="workshop" size="lg" disabled={isSubmitting}>
+                  {isSubmitting ? "Submitting..." : "Submit Complete Form"}
                 </Button>
               </div>
             </form>
