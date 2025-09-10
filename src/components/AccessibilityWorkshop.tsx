@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Lock } from "lucide-react";
+import { CheckCircle, Lock, Trophy } from "lucide-react";
+import { Link } from "react-router-dom";
 import WorkshopIntro from "./WorkshopIntro";
 import HearingSection from "./HearingSection";
 import VisionSection from "./VisionSection";
@@ -101,9 +102,17 @@ const AccessibilityWorkshop = () => {
               </ul>
             </div>
 
-            <Button variant="workshop" onClick={resetWorkshop} size="lg">
-              Restart Workshop
-            </Button>
+            <div className="flex gap-4 justify-center">
+              <Button variant="workshop" onClick={resetWorkshop} size="lg">
+                Restart Workshop
+              </Button>
+              <Link to="/leaderboard">
+                <Button variant="outline" size="lg" className="flex items-center gap-2">
+                  <Trophy className="h-4 w-4" />
+                  View Leaderboard
+                </Button>
+              </Link>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -117,9 +126,17 @@ const AccessibilityWorkshop = () => {
         <Card className="p-4">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-2xl font-bold">Accessibility Workshop</h1>
-            <span className="text-sm text-muted-foreground">
-              {completedSections.length}/{sections.length} completed
-            </span>
+            <div className="flex items-center gap-4">
+              <Link to="/leaderboard">
+                <Button variant="outline" size="sm" className="flex items-center gap-2">
+                  <Trophy className="h-4 w-4" />
+                  Leaderboard
+                </Button>
+              </Link>
+              <span className="text-sm text-muted-foreground">
+                {completedSections.length}/{sections.length} completed
+              </span>
+            </div>
           </div>
           
           <div className="grid grid-cols-4 gap-2">
