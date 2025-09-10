@@ -24,8 +24,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
     favoritePlaces: "",
     petName: "",
     childhoodFriend: "",
-    dreamJob: "",
-    password: ""
+    dreamJob: ""
   });
   
   const [currentPopup, setCurrentPopup] = useState<PopupProblem | null>(null);
@@ -35,7 +34,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
   const [isActive, setIsActive] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const correctPassword = "FOCUS";
+  
 
   const problems: PopupProblem[] = [
     { id: 1, type: 'math', question: 'What is 15 × 7?', answer: '105' },
@@ -101,7 +100,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
     e.preventDefault();
     
     // Check if form is complete
-    const requiredFields = ['name', 'favoriteDishes', 'favoritePlaces', 'petName', 'password'];
+    const requiredFields = ['name', 'favoriteDishes', 'favoritePlaces', 'petName'];
     const isComplete = requiredFields.every(field => formData[field as keyof typeof formData].trim() !== '');
     
     if (!isComplete) {
@@ -109,18 +108,11 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
       return;
     }
 
-    if (formData.password.toUpperCase() === correctPassword) {
-      setIsActive(false);
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-      onPasswordSubmit(formData.password);
-    } else {
-      const input = document.querySelector('.cognitive-password-input');
-      input?.classList.add('animate-shake');
-      setTimeout(() => input?.classList.remove('animate-shake'), 500);
-      setFormData({ ...formData, password: "" });
+    setIsActive(false);
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
     }
+    onPasswordSubmit('COMPLETED');
   };
 
   const startChallenge = () => {
@@ -140,8 +132,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
       <CardContent className="space-y-6">
         <div className="text-center">
           <p className="text-muted-foreground mb-4">
-            Fill out the form completely while managing constant popup distractions. 
-            The password is hidden in this instruction: "Stay FOCUSED on the task at hand."
+            Fill out the form completely while managing constant popup distractions.
           </p>
         </div>
 
@@ -232,18 +223,6 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
                     placeholder="Your dream career"
                   />
                 </div>
-              </div>
-
-              <div>
-                <Label htmlFor="password">Password (hint: stay _____ on the task) *</Label>
-                <Input
-                  id="password"
-                  type="text"
-                  value={formData.password}
-                  onChange={(e) => handleFormChange('password', e.target.value)}
-                  className="cognitive-password-input password-input"
-                  placeholder="Enter the password..."
-                />
               </div>
 
               <div className="flex justify-center">
