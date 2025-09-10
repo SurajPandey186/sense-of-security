@@ -129,53 +129,28 @@ const Leaderboard = () => {
                 <p className="text-muted-foreground">No entries yet. Be the first to submit!</p>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {entries.map((entry, index) => (
                   <div
                     key={entry.id}
-                    className={`p-6 rounded-lg border transition-all ${index === 0 ? 'bg-yellow-50 border-yellow-200' :
+                    className={`flex items-center justify-between p-4 rounded-lg border transition-all ${index === 0 ? 'bg-yellow-50 border-yellow-200' :
                         index === 1 ? 'bg-gray-50 border-gray-200' :
                           index === 2 ? 'bg-amber-50 border-amber-200' :
                             'bg-muted/50 border-border'
                       }`}
                   >
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-4">
-                        {getRankIcon(index)}
-                        <div>
-                          <p className="font-semibold text-lg">{entry.name}</p>
-                          <p className="text-sm text-muted-foreground">
-                            Submitted: {new Date(entry.created_at).toLocaleString()}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-2xl font-bold text-primary">{entry.cognitive_score || 0}</p>
-                        <p className="text-xs text-muted-foreground">cognitive score</p>
+                    <div className="flex items-center gap-4">
+                      {getRankIcon(index)}
+                      <div>
+                        <p className="font-semibold text-lg">{entry.name}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Submitted: {new Date(entry.created_at).toLocaleString()}
+                        </p>
                       </div>
                     </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <p className="font-medium text-muted-foreground mb-1">Favorite Dishes:</p>
-                        <p className="text-sm">{entry.favorite_dishes || 'Not provided'}</p>
-                      </div>
-                      <div>
-                        <p className="font-medium text-muted-foreground mb-1">Favorite Places:</p>
-                        <p className="text-sm">{entry.favorite_places || 'Not provided'}</p>
-                      </div>
-                      <div>
-                        <p className="font-medium text-muted-foreground mb-1">Pet's Name:</p>
-                        <p className="text-sm">{entry.pet_name || 'Not provided'}</p>
-                      </div>
-                      <div>
-                        <p className="font-medium text-muted-foreground mb-1">Childhood Friend:</p>
-                        <p className="text-sm">{entry.childhood_friend || 'Not provided'}</p>
-                      </div>
-                      <div className="md:col-span-2">
-                        <p className="font-medium text-muted-foreground mb-1">Dream Job:</p>
-                        <p className="text-sm">{entry.dream_job || 'Not provided'}</p>
-                      </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-primary">#{index + 1}</p>
+                      <p className="text-xs text-muted-foreground">rank</p>
                     </div>
                   </div>
                 ))}
