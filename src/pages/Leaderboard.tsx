@@ -2,10 +2,8 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Trophy, Medal, Award, Plus, Users } from "lucide-react";
+import { Trophy, Medal, Award, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface LeaderboardEntry {
@@ -14,13 +12,17 @@ interface LeaderboardEntry {
   email: string;
   score: number;
   created_at: string;
+  favorite_dishes: string | null;
+  favorite_places: string | null;
+  pet_name: string | null;
+  childhood_friend: string | null;
+  dream_job: string | null;
+  cognitive_score: number | null;
 }
 
 const Leaderboard = () => {
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-  const [formData, setFormData] = useState({ name: "", email: "", score: "" });
   const { toast } = useToast();
 
   // Fetch leaderboard data
@@ -42,41 +44,6 @@ const Leaderboard = () => {
       });
     } finally {
       setLoading(false);
-    }
-  };
-
-  // Submit new entry
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.name || !formData.email || !formData.score) return;
-
-    setSubmitting(true);
-    try {
-      const { error } = await supabase
-        .from('leaderboard')
-        .insert([{
-          name: formData.name,
-          email: formData.email,
-          score: parseInt(formData.score) || 0
-        }]);
-
-      if (error) throw error;
-
-      toast({
-        title: "Success!",
-        description: "Your entry has been added to the leaderboard!",
-      });
-
-      setFormData({ name: "", email: "", score: "" });
-    } catch (error) {
-      console.error('Error submitting entry:', error);
-      toast({
-        title: "Error",
-        description: "Failed to submit entry",
-        variant: "destructive",
-      });
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -139,68 +106,13 @@ const Leaderboard = () => {
           </Link>
           <h1 className="text-4xl font-bold text-primary flex items-center justify-center gap-3">
             <Trophy className="h-8 w-8" />
-            Live Leaderboard
+            Workshop Leaderboard
           </h1>
           <p className="text-muted-foreground">
-            Real-time updates • First to submit appears at top
+            Real-time updates • Form submissions from cognitive challenge
           </p>
         </div>
 
-        {/* Submission Form */}
-        <Card className="border-primary/20 shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Plus className="h-5 w-5" />
-              Submit Your Entry
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label htmlFor="name">Name</Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                    placeholder="Your name"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                    placeholder="your@email.com"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="score">Score</Label>
-                  <Input
-                    id="score"
-                    type="number"
-                    value={formData.score}
-                    onChange={(e) => setFormData(prev => ({ ...prev, score: e.target.value }))}
-                    placeholder="0"
-                    min="0"
-                    required
-                  />
-                </div>
-              </div>
-              <Button 
-                type="submit" 
-                disabled={submitting}
-                className="w-full"
-              >
-                {submitting ? "Submitting..." : "Submit Entry"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
 
         {/* Leaderboard */}
         <Card className="border-primary/20 shadow-lg">
@@ -221,26 +133,24 @@ const Leaderboard = () => {
                 {entries.map((entry, index) => (
                   <div
                     key={entry.id}
-                    className={`flex items-center justify-between p-4 rounded-lg border transition-all ${
-                      index === 0 ? 'bg-yellow-50 border-yellow-200' :
-                      index === 1 ? 'bg-gray-50 border-gray-200' :
-                      index === 2 ? 'bg-amber-50 border-amber-200' :
-                      'bg-muted/50 border-border'
-                    }`}
+                    className={`flex items-center justify-between p-4 rounded-lg border transition-all ${index === 0 ? 'bg-yellow-50 border-yellow-200' :
+                        index === 1 ? 'bg-gray-50 border-gray-200' :
+                          index === 2 ? 'bg-amber-50 border-amber-200' :
+                            'bg-muted/50 border-border'
+                      }`}
                   >
                     <div className="flex items-center gap-4">
                       {getRankIcon(index)}
                       <div>
-                        <p className="font-semibold">{entry.name}</p>
-                        <p className="text-sm text-muted-foreground">{entry.email}</p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="font-semibold text-lg">{entry.name}</p>
+                        <p className="text-sm text-muted-foreground">
                           Submitted: {new Date(entry.created_at).toLocaleString()}
                         </p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-2xl font-bold text-primary">{entry.score}</p>
-                      <p className="text-xs text-muted-foreground">points</p>
+                      <p className="text-2xl font-bold text-primary">#{index + 1}</p>
+                      <p className="text-xs text-muted-foreground">rank</p>
                     </div>
                   </div>
                 ))}
