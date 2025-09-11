@@ -133,7 +133,7 @@ const Leaderboard = () => {
                 {entries.map((entry, index) => (
                   <div
                     key={entry.id}
-                    className={`flex items-center justify-between p-4 rounded-lg border transition-all ${index === 0 ? 'bg-yellow-50 border-yellow-200' :
+                    className={`flex items-center justify-between p-6 rounded-lg border transition-all hover:shadow-glow ${index === 0 ? 'bg-yellow-50 border-yellow-200' :
                         index === 1 ? 'bg-gray-50 border-gray-200' :
                           index === 2 ? 'bg-amber-50 border-amber-200' :
                             'bg-muted/50 border-border'
@@ -142,14 +142,20 @@ const Leaderboard = () => {
                     <div className="flex items-center gap-4">
                       {getRankIcon(index)}
                       <div>
-                        <p className="font-semibold text-lg">{entry.name}</p>
-                        <p className="text-sm text-muted-foreground">
-                          Submitted: {new Date(entry.created_at).toLocaleString()}
+                        <p className="font-bold text-xl text-primary">{entry.name}</p>
+                        <p className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                          📧 {entry.email}
+                        </p>
+                        <p className="text-sm text-muted-foreground flex items-center gap-1">
+                          🏆 Score: <span className="font-semibold">{entry.cognitive_score || entry.score || 0}</span>
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          ⏰ {new Date(entry.created_at).toLocaleString()}
                         </p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-2xl font-bold text-primary">#{index + 1}</p>
+                      <p className="text-3xl font-bold text-primary">#{index + 1}</p>
                       <p className="text-xs text-muted-foreground">rank</p>
                     </div>
                   </div>

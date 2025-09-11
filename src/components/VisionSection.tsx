@@ -51,15 +51,23 @@ const VisionSection = ({ onPasswordSubmit }: VisionSectionProps) => {
       <CardContent className="space-y-6">
         <div className="text-center">
           <p className="text-muted-foreground mb-4">
-            The password is hidden in the content below, but it's nearly impossible to see due to poor contrast. 
-            Use the screen reader simulation to find it.
+            Use Screen Reader to read the text below. The password is hidden but impossible to see due to poor contrast.
           </p>
+          <div className="bg-muted p-4 rounded-lg">
+            <p className="text-sm text-muted-foreground">
+              <strong>💡 How to enable screen reader:</strong><br/>
+              • <strong>Windows:</strong> Press Windows + Ctrl + Enter to start Narrator<br/>
+              • <strong>Mac:</strong> Press Command + F5 to start VoiceOver<br/>
+              • <strong>Chrome:</strong> Install ChromeVox extension<br/>
+              • Use Tab and Arrow keys to navigate through the content
+            </p>
+          </div>
         </div>
 
-        {/* Poor contrast content */}
-        <div className="poor-contrast p-6 rounded-lg border">
-          <h3 className="text-lg font-semibold mb-4">Important Information</h3>
-          <div className="space-y-3 text-sm leading-relaxed">
+        {/* Poor contrast content - black on black */}
+        <div className="bg-black p-6 rounded-lg border border-gray-800 select-none" style={{userSelect: 'none', WebkitUserSelect: 'none', msUserSelect: 'none', MozUserSelect: 'none'}}>
+          <h3 className="text-lg font-semibold mb-4 text-black">Use Screen Reader to read the text</h3>
+          <div className="space-y-3 text-sm leading-relaxed text-black" style={{userSelect: 'none', WebkitUserSelect: 'none', msUserSelect: 'none', MozUserSelect: 'none'}}>
             <p>
               Welcome to our accessibility workshop. This section demonstrates how poor color contrast 
               affects users with visual impairments including low vision, color blindness, and other conditions.

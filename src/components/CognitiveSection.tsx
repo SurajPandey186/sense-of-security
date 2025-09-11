@@ -21,13 +21,17 @@ interface PopupProblem {
 
 const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
   const [formData, setFormData] = useState({
-    name: "",
-    favoriteDishes: "",
-    favoritePlaces: "",
-    petName: "",
-    childhoodFriend: "",
-    dreamJob: ""
+    firstName: "",
+    lastName: "",
+    email: "",
+    favoriteFood: "",
+    birthPlace: "",
+    motherMaidenName: "",
+    firstSchool: "",
+    favoriteTeacher: ""
   });
+  
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
 
   const [currentPopup, setCurrentPopup] = useState<PopupProblem | null>(null);
   const [popupAnswer, setPopupAnswer] = useState("");
@@ -41,14 +45,14 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
 
 
   const problems: PopupProblem[] = [
-    { id: 1, type: 'math', question: 'What is 15 × 7?', answer: '105' },
-    { id: 2, type: 'puzzle', question: 'What has keys but no locks, space but no room?', answer: 'keyboard' },
-    { id: 3, type: 'math', question: 'What is 234 ÷ 6?', answer: '39' },
-    { id: 4, type: 'puzzle', question: 'I am not alive, but I grow. I have no lungs, but I need air. What am I?', answer: 'fire' },
-    { id: 5, type: 'math', question: 'What is 12² - 8²?', answer: '80' },
-    { id: 6, type: 'puzzle', question: 'What gets wetter the more it dries?', answer: 'towel' },
-    { id: 7, type: 'math', question: 'What is 7 × 8 + 12?', answer: '68' },
-    { id: 8, type: 'puzzle', question: 'What has one eye but cannot see?', answer: 'needle' }
+    { id: 1, type: 'math', question: 'If you have 3 apples and give away 1, how many do you have left?', answer: '2' },
+    { id: 2, type: 'puzzle', question: 'What comes after Monday?', answer: 'tuesday' },
+    { id: 3, type: 'math', question: 'How many minutes are in one hour?', answer: '60' },
+    { id: 4, type: 'puzzle', question: 'What color do you get when you mix red and yellow?', answer: 'orange' },
+    { id: 5, type: 'math', question: 'What is 10 + 5?', answer: '15' },
+    { id: 6, type: 'puzzle', question: 'How many days are in a week?', answer: '7' },
+    { id: 7, type: 'math', question: 'What is 20 - 8?', answer: '12' },
+    { id: 8, type: 'puzzle', question: 'What season comes after winter?', answer: 'spring' }
   ];
 
   const generatePopup = () => {
@@ -100,17 +104,30 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
     setFormData({ ...formData, [field]: value });
   };
 
+  const validateForm = () => {
+    const newErrors: {[key: string]: string} = {};
+    
+    if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
+    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email";
+    }
+    if (!formData.favoriteFood.trim()) newErrors.favoriteFood = "Favorite food is required";
+    if (!formData.birthPlace.trim()) newErrors.birthPlace = "Birth place is required";
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Check if form is complete
-    const requiredFields = ['name', 'favoriteDishes', 'favoritePlaces', 'petName'];
-    const isComplete = requiredFields.every(field => formData[field as keyof typeof formData].trim() !== '');
-
-    if (!isComplete) {
+    if (!validateForm()) {
       toast({
         title: "Incomplete Form",
-        description: "Please fill in all required fields while managing the popup distractions!",
+        description: "Please fix all validation errors while managing the popup distractions!",
         variant: "destructive",
       });
       return;
@@ -127,13 +144,13 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
       const { error } = await supabase
         .from('leaderboard')
         .insert([{
-          name: formData.name,
-          email: `${formData.name.toLowerCase().replace(/\s+/g, '')}@example.com`, // Generate email from name
-          favorite_dishes: formData.favoriteDishes,
-          favorite_places: formData.favoritePlaces,
-          pet_name: formData.petName,
-          childhood_friend: formData.childhoodFriend,
-          dream_job: formData.dreamJob,
+          name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          favorite_dishes: formData.favoriteFood,
+          favorite_places: formData.birthPlace,
+          pet_name: formData.motherMaidenName,
+          childhood_friend: formData.firstSchool,
+          dream_job: formData.favoriteTeacher,
           cognitive_score: score,
           score: score // Keep score for compatibility
         }]);
@@ -202,72 +219,106 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="name">Full Name *</Label>
+                  <Label htmlFor="firstName">First Name *</Label>
                   <Input
-                    id="name"
+                    id="firstName"
                     type="text"
-                    value={formData.name}
-                    onChange={(e) => handleFormChange('name', e.target.value)}
-                    placeholder="Enter your full name"
+                    value={formData.firstName}
+                    onChange={(e) => handleFormChange('firstName', e.target.value)}
+                    placeholder="Enter your first name"
+                    className={errors.firstName ? "border-red-500" : ""}
                   />
+                  {errors.firstName && <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>}
                 </div>
 
                 <div>
-                  <Label htmlFor="petName">Pet's Name *</Label>
+                  <Label htmlFor="lastName">Last Name *</Label>
                   <Input
-                    id="petName"
+                    id="lastName"
                     type="text"
-                    value={formData.petName}
-                    onChange={(e) => handleFormChange('petName', e.target.value)}
-                    placeholder="Your pet's name"
+                    value={formData.lastName}
+                    onChange={(e) => handleFormChange('lastName', e.target.value)}
+                    placeholder="Enter your last name"
+                    className={errors.lastName ? "border-red-500" : ""}
                   />
+                  {errors.lastName && <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>}
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="favoriteDishes">Favorite Dishes (3 minimum) *</Label>
-                <Textarea
-                  id="favoriteDishes"
-                  value={formData.favoriteDishes}
-                  onChange={(e) => handleFormChange('favoriteDishes', e.target.value)}
-                  placeholder="List your favorite dishes..."
-                  rows={3}
+                <Label htmlFor="email">Email Address *</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => handleFormChange('email', e.target.value)}
+                  placeholder="Enter your email address"
+                  className={errors.email ? "border-red-500" : ""}
                 />
-              </div>
-
-              <div>
-                <Label htmlFor="favoritePlaces">Favorite Places to Visit *</Label>
-                <Textarea
-                  id="favoritePlaces"
-                  value={formData.favoritePlaces}
-                  onChange={(e) => handleFormChange('favoritePlaces', e.target.value)}
-                  placeholder="Describe places you love to visit..."
-                  rows={3}
-                />
+                {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="childhoodFriend">Childhood Best Friend</Label>
+                  <Label htmlFor="favoriteFood">What is your favorite food? *</Label>
                   <Input
-                    id="childhoodFriend"
+                    id="favoriteFood"
                     type="text"
-                    value={formData.childhoodFriend}
-                    onChange={(e) => handleFormChange('childhoodFriend', e.target.value)}
-                    placeholder="Your childhood friend's name"
+                    value={formData.favoriteFood}
+                    onChange={(e) => handleFormChange('favoriteFood', e.target.value)}
+                    placeholder="Your favorite food"
+                    className={errors.favoriteFood ? "border-red-500" : ""}
+                  />
+                  {errors.favoriteFood && <p className="text-red-500 text-xs mt-1">{errors.favoriteFood}</p>}
+                </div>
+
+                <div>
+                  <Label htmlFor="birthPlace">Where were you born? *</Label>
+                  <Input
+                    id="birthPlace"
+                    type="text"
+                    value={formData.birthPlace}
+                    onChange={(e) => handleFormChange('birthPlace', e.target.value)}
+                    placeholder="Your birth place"
+                    className={errors.birthPlace ? "border-red-500" : ""}
+                  />
+                  {errors.birthPlace && <p className="text-red-500 text-xs mt-1">{errors.birthPlace}</p>}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="motherMaidenName">What is your mother's maiden name?</Label>
+                  <Input
+                    id="motherMaidenName"
+                    type="text"
+                    value={formData.motherMaidenName}
+                    onChange={(e) => handleFormChange('motherMaidenName', e.target.value)}
+                    placeholder="Mother's maiden name"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="dreamJob">Dream Job</Label>
+                  <Label htmlFor="firstSchool">What was your first school's name?</Label>
                   <Input
-                    id="dreamJob"
+                    id="firstSchool"
                     type="text"
-                    value={formData.dreamJob}
-                    onChange={(e) => handleFormChange('dreamJob', e.target.value)}
-                    placeholder="Your dream career"
+                    value={formData.firstSchool}
+                    onChange={(e) => handleFormChange('firstSchool', e.target.value)}
+                    placeholder="First school name"
                   />
                 </div>
+              </div>
+
+              <div>
+                <Label htmlFor="favoriteTeacher">Who was your favorite teacher?</Label>
+                <Input
+                  id="favoriteTeacher"
+                  type="text"
+                  value={formData.favoriteTeacher}
+                  onChange={(e) => handleFormChange('favoriteTeacher', e.target.value)}
+                  placeholder="Favorite teacher's name"
+                />
               </div>
 
               <div className="flex justify-center">

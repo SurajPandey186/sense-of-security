@@ -8,10 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export const commonPasswords = [
   "password",
-  "123456",
-  "123456789",
   "qwerty",
-  "abc123",
   "letmein",
   "monkey",
   "football",
@@ -22,9 +19,12 @@ export const commonPasswords = [
   "princess",
   "dragon",
   "sunshine",
-  "passw0rd",
   "master",
   "hello",
   "ninja",
-  "trustno1"
+  "trustno",
+  "secret",
+  "shadow",
+  "freedom",
+  "computer"
 ];
