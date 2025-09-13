@@ -70,18 +70,24 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
   const submitPopupAnswer = () => {
     if (popupAnswer.toLowerCase().trim() === currentPopup?.answer.toLowerCase()) {
       setScore(score + 1);
+      closePopup();
+    } else {
+      // Wrong answer - shake animation and clear input
+      const input = document.querySelector('.popup-input');
+      input?.classList.add('animate-shake');
+      setTimeout(() => input?.classList.remove('animate-shake'), 500);
+      setPopupAnswer("");
     }
-    closePopup();
   };
 
   useEffect(() => {
     if (isActive) {
       intervalRef.current = setInterval(() => {
         generatePopup();
-      }, 10000);
+      }, 5000);
 
-      // Generate first popup after 3 seconds
-      setTimeout(generatePopup, 3000);
+      // Generate first popup after 2 seconds
+      setTimeout(generatePopup, 2000);
     }
 
     return () => {
@@ -91,14 +97,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
     };
   }, [isActive]);
 
-  useEffect(() => {
-    if (currentPopup && timeLeft > 0) {
-      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-      return () => clearTimeout(timer);
-    } else if (currentPopup && timeLeft === 0) {
-      closePopup();
-    }
-  }, [currentPopup, timeLeft]);
+  // Removed auto-close timer - popup only closes when answered correctly
 
   const handleFormChange = (field: string, value: string) => {
     setFormData({ ...formData, [field]: value });
@@ -204,7 +203,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
               Start Cognitive Challenge
             </Button>
             <p className="text-sm text-muted-foreground mt-2">
-              Math problems and puzzles will pop up every 10 seconds once started
+              Questions will pop up every 5 seconds - you must answer correctly to continue
             </p>
           </div>
         ) : (
@@ -335,11 +334,8 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 popup-enter">
             <Card className="w-96 mx-4 animate-bounce-in">
               <CardHeader className="pb-2">
-                <CardTitle className="text-lg flex justify-between items-center">
-                  {currentPopup.type === 'math' ? '🔢' : '🧩'} Solve This!
-                  <span className="text-sm bg-destructive text-destructive-foreground px-2 py-1 rounded">
-                    {timeLeft}s
-                  </span>
+                <CardTitle className="text-lg">
+                  {currentPopup.type === 'math' ? '🔢' : '🧩'} Answer Required!
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -349,23 +345,22 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
                   value={popupAnswer}
                   onChange={(e) => setPopupAnswer(e.target.value)}
                   placeholder="Your answer..."
+                  className="popup-input"
                   autoFocus
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       submitPopupAnswer();
-                    } else if (e.key === 'Escape') {
-                      closePopup();
                     }
                   }}
                 />
-                <div className="flex gap-2">
-                  <Button onClick={submitPopupAnswer} size="sm" variant="workshop" className="flex-1">
-                    Submit
-                  </Button>
-                  <Button onClick={closePopup} size="sm" variant="outline">
-                    Skip
+                <div className="flex justify-center">
+                  <Button onClick={submitPopupAnswer} size="sm" variant="workshop" className="w-full">
+                    Submit Answer
                   </Button>
                 </div>
+                <p className="text-xs text-muted-foreground text-center">
+                  You must answer correctly to continue
+                </p>
               </CardContent>
             </Card>
           </div>

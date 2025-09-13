@@ -49,17 +49,17 @@ const VisionSection = ({ onPasswordSubmit }: VisionSectionProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="text-center">
-          <p className="text-muted-foreground mb-4">
-            Use Screen Reader to read the text below. The password is hidden but impossible to see due to poor contrast.
+        <div className="text-center" aria-hidden="true">
+          <p className="text-muted-foreground mb-4" aria-hidden="true">
+            Use Screen Reader to navigate to the content below. The password is hidden in poor contrast text.
           </p>
-          <div className="bg-muted p-4 rounded-lg">
-            <p className="text-sm text-muted-foreground">
+          <div className="bg-muted p-4 rounded-lg" aria-hidden="true">
+            <p className="text-sm text-muted-foreground" aria-hidden="true">
               <strong>💡 How to enable screen reader:</strong><br/>
               • <strong>Windows:</strong> Press Windows + Ctrl + Enter to start Narrator<br/>
               • <strong>Mac:</strong> Press Command + F5 to start VoiceOver<br/>
               • <strong>Chrome:</strong> Install ChromeVox extension<br/>
-              • Use Tab and Arrow keys to navigate through the content
+              • Use Tab and Arrow keys to navigate through the content below
             </p>
           </div>
         </div>
