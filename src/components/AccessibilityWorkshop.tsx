@@ -125,7 +125,7 @@ const AccessibilityWorkshop = () => {
         {/* Progress Bar */}
         <Card className="p-4">
           <div aria-hidden={true} className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-bold">Accessibility Workshop</h1>
+            <h1 className="text-2xl font-bold">BlindFolded WorkShop</h1>
             <div className="flex items-center gap-4">
               <Link to="/leaderboard">
                 <Button variant="outline" size="sm" className="flex items-center gap-2">
