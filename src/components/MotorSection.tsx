@@ -13,6 +13,7 @@ const MotorSection = ({ onPasswordSubmit }: MotorSectionProps) => {
   const [password, setPassword] = useState("");
   const [currentFocus, setCurrentFocus] = useState(0);
   const [isMouseDisabled, setIsMouseDisabled] = useState(false);
+  const [visitedElements, setVisitedElements] = useState<number[]>([]);
   const [correctPassword] = useState<string>(() => {
     const idx = Math.floor(Math.random() * commonPasswords.length);
     return commonPasswords[idx].toUpperCase();
@@ -33,16 +34,26 @@ const MotorSection = ({ onPasswordSubmit }: MotorSectionProps) => {
     "motor-password", "submit-motor-btn"
   ];
 
+  const getRandomNextElement = () => {
+    // Get all available elements except the current one
+    const availableIndexes = focusableElements
+      .map((_, index) => index)
+      .filter(index => index !== currentFocus);
+    
+    // Return random index from available options
+    const randomIndex = Math.floor(Math.random() * availableIndexes.length);
+    return availableIndexes[randomIndex];
+  };
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isMouseDisabled) return;
       
       if (e.key === "Tab") {
         e.preventDefault();
-        const nextIndex = e.shiftKey 
-          ? (currentFocus - 1 + focusableElements.length) % focusableElements.length
-          : (currentFocus + 1) % focusableElements.length;
+        const nextIndex = getRandomNextElement();
         setCurrentFocus(nextIndex);
+        setVisitedElements(prev => [...new Set([...prev, nextIndex])]);
         
         const element = document.getElementById(focusableElements[nextIndex]);
         element?.focus();
