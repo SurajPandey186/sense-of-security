@@ -40,7 +40,7 @@ const VisionSection = ({ onPasswordSubmit }: VisionSectionProps) => {
 
   return (
     <div className="workshop-section">
-      <CardHeader>
+      <CardHeader aria-hidden="true">
         <CardTitle className="flex items-center gap-3">
           👁️ Vision Disability Simulation
           <span className="text-sm font-normal bg-accent text-accent-foreground px-2 py-1 rounded">
@@ -88,7 +88,7 @@ const VisionSection = ({ onPasswordSubmit }: VisionSectionProps) => {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" aria-hidden="true">
           <div>
             <Label htmlFor="vision-password">Enter the password from the content above:</Label>
             <Input
@@ -109,7 +109,7 @@ const VisionSection = ({ onPasswordSubmit }: VisionSectionProps) => {
           </div>
         </form>
 
-        <div className="text-xs text-muted-foreground">
+        <div className="text-xs text-muted-foreground" aria-hidden="true">
           <p>💡 <strong>Learning:</strong> People with visual impairments use screen readers and need proper contrast ratios.</p>
           <p>Always test color contrast and provide screen reader compatible content with proper semantic markup.</p>
         </div>
