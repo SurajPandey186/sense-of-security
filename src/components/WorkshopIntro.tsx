@@ -11,7 +11,7 @@ const WorkshopIntro = ({ onStart }: WorkshopIntroProps) => {
       <Card className="max-w-2xl w-full">
         <CardHeader className="text-center">
           <CardTitle className="text-4xl font-bold mb-4">
-            🎓 BlindFolded WorkShop
+            🎓 Blindfolded Browsing
           </CardTitle>
           <CardDescription className="text-lg">
             Experience different disability perspectives through interactive challenges
