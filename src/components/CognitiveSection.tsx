@@ -24,11 +24,12 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
     firstName: "",
     lastName: "",
     email: "",
-    favoriteFood: "",
-    birthPlace: "",
-    motherMaidenName: "",
-    firstSchool: "",
-    favoriteTeacher: ""
+    batteryLevel: "",
+    emoji: "",
+    specialTalent: "",
+    changeWorld: "",
+    likingSession: "",
+    feedback: ""
   });
   
   const [errors, setErrors] = useState<{[key: string]: string}>({});
@@ -142,8 +143,12 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Please enter a valid email";
     }
-    if (!formData.favoriteFood.trim()) newErrors.favoriteFood = "Favorite food is required";
-    if (!formData.birthPlace.trim()) newErrors.birthPlace = "Birth place is required";
+    if (!formData.batteryLevel.trim()) {
+      newErrors.batteryLevel = "Battery level is required";
+    } else if (!/^\d+$/.test(formData.batteryLevel) || parseInt(formData.batteryLevel) < 0 || parseInt(formData.batteryLevel) > 100) {
+      newErrors.batteryLevel = "Please enter a valid percentage (0-100)";
+    }
+    if (!formData.likingSession.trim()) newErrors.likingSession = "Please select an option";
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -178,11 +183,11 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
         .insert([{
           name: `${formData.firstName} ${formData.lastName}`,
           email: formData.email,
-          favorite_dishes: formData.favoriteFood,
-          favorite_places: formData.birthPlace,
-          pet_name: formData.motherMaidenName,
-          childhood_friend: formData.firstSchool,
-          dream_job: formData.favoriteTeacher,
+          favorite_dishes: formData.batteryLevel,
+          favorite_places: formData.emoji,
+          pet_name: formData.specialTalent,
+          childhood_friend: formData.changeWorld,
+          dream_job: formData.likingSession,
           cognitive_score: score,
           score: score // Keep score for compatibility
         }]);
@@ -292,65 +297,80 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="favoriteFood">What is your favorite food? *</Label>
+                  <Label htmlFor="batteryLevel">What's your battery level right now (in percentage)? *</Label>
                   <Input
-                    id="favoriteFood"
-                    type="text"
-                    value={formData.favoriteFood}
-                    onChange={(e) => handleFormChange('favoriteFood', e.target.value)}
-                    placeholder="Your favorite food"
-                    className={errors.favoriteFood ? "border-red-500" : ""}
+                    id="batteryLevel"
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={formData.batteryLevel}
+                    onChange={(e) => handleFormChange('batteryLevel', e.target.value)}
+                    placeholder="Enter percentage (0-100)"
+                    className={errors.batteryLevel ? "border-red-500" : ""}
                   />
-                  {errors.favoriteFood && <p className="text-red-500 text-xs mt-1">{errors.favoriteFood}</p>}
+                  {errors.batteryLevel && <p className="text-red-500 text-xs mt-1">{errors.batteryLevel}</p>}
                 </div>
 
                 <div>
-                  <Label htmlFor="birthPlace">Where were you born? *</Label>
+                  <Label htmlFor="emoji">If you were an emoji, which one?</Label>
                   <Input
-                    id="birthPlace"
+                    id="emoji"
                     type="text"
-                    value={formData.birthPlace}
-                    onChange={(e) => handleFormChange('birthPlace', e.target.value)}
-                    placeholder="Your birth place"
-                    className={errors.birthPlace ? "border-red-500" : ""}
-                  />
-                  {errors.birthPlace && <p className="text-red-500 text-xs mt-1">{errors.birthPlace}</p>}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="motherMaidenName">What is your mother's maiden name?</Label>
-                  <Input
-                    id="motherMaidenName"
-                    type="text"
-                    value={formData.motherMaidenName}
-                    onChange={(e) => handleFormChange('motherMaidenName', e.target.value)}
-                    placeholder="Mother's maiden name"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="firstSchool">What was your first school's name?</Label>
-                  <Input
-                    id="firstSchool"
-                    type="text"
-                    value={formData.firstSchool}
-                    onChange={(e) => handleFormChange('firstSchool', e.target.value)}
-                    placeholder="First school name"
+                    value={formData.emoji}
+                    onChange={(e) => handleFormChange('emoji', e.target.value)}
+                    placeholder="Enter your emoji"
                   />
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="favoriteTeacher">Who was your favorite teacher?</Label>
-                <Input
-                  id="favoriteTeacher"
-                  type="text"
-                  value={formData.favoriteTeacher}
-                  onChange={(e) => handleFormChange('favoriteTeacher', e.target.value)}
-                  placeholder="Favorite teacher's name"
+                <Label htmlFor="specialTalent">What's your special talent?</Label>
+                <Textarea
+                  id="specialTalent"
+                  value={formData.specialTalent}
+                  onChange={(e) => handleFormChange('specialTalent', e.target.value)}
+                  placeholder="Tell us about your special talent"
+                  rows={3}
                 />
+              </div>
+
+              <div>
+                <Label htmlFor="changeWorld">If you were to change one thing in the world to make it a better place, what would you change?</Label>
+                <Textarea
+                  id="changeWorld"
+                  value={formData.changeWorld}
+                  onChange={(e) => handleFormChange('changeWorld', e.target.value)}
+                  placeholder="What would you change in the world?"
+                  rows={3}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="likingSession">Are you liking this session? *</Label>
+                  <select
+                    id="likingSession"
+                    value={formData.likingSession}
+                    onChange={(e) => handleFormChange('likingSession', e.target.value)}
+                    className={`w-full px-3 py-2 border rounded-md ${errors.likingSession ? "border-red-500" : "border-input"} bg-background`}
+                  >
+                    <option value="">Select an option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                  {errors.likingSession && <p className="text-red-500 text-xs mt-1">{errors.likingSession}</p>}
+                </div>
+
+                <div>
+                  <Label htmlFor="feedback">A short feedback for us on the basis of your experience in this session until now?</Label>
+                  <Textarea
+                    id="feedback"
+                    value={formData.feedback}
+                    onChange={(e) => handleFormChange('feedback', e.target.value)}
+                    placeholder="Share your feedback"
+                    rows={3}
+                  />
+                </div>
               </div>
 
               <div className="flex justify-center">
