@@ -12,11 +12,12 @@ interface LeaderboardEntry {
   email: string;
   score: number;
   created_at: string;
-  favorite_dishes: string | null;
-  favorite_places: string | null;
-  pet_name: string | null;
-  childhood_friend: string | null;
-  dream_job: string | null;
+  battery_level: number | null;
+  favorite_emoji: string | null;
+  special_talent: string | null;
+  world_change: string | null;
+  session_rating: string | null;
+  session_feedback: string | null;
   cognitive_score: number | null;
 }
 

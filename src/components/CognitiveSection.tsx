@@ -183,11 +183,12 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
         .insert([{
           name: `${formData.firstName} ${formData.lastName}`,
           email: formData.email,
-          favorite_dishes: formData.batteryLevel,
-          favorite_places: formData.emoji,
-          pet_name: formData.specialTalent,
-          childhood_friend: formData.changeWorld,
-          dream_job: formData.likingSession,
+          battery_level: parseInt(formData.batteryLevel),
+          favorite_emoji: formData.emoji,
+          special_talent: formData.specialTalent,
+          world_change: formData.changeWorld,
+          session_rating: formData.likingSession,
+          session_feedback: formData.feedback,
           cognitive_score: score,
           score: score // Keep score for compatibility
         }]);
