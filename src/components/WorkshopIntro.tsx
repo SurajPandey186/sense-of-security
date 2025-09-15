@@ -64,8 +64,7 @@ const WorkshopIntro = ({ onStart }: WorkshopIntroProps) => {
           </div>
 
           <div className="text-center text-sm text-muted-foreground">
-            <p>⚠️ This workshop includes flashing content and intentionally difficult interfaces</p>
-            <p>Use screen readers, keyboard navigation, and assistive technologies as needed</p>
+            <p>The Accessibility Challenge Shaking Up the Web!</p>
           </div>
         </CardContent>
       </Card>
