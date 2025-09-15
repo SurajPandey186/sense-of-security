@@ -40,6 +40,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
   const [isActive, setIsActive] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
 
 
@@ -48,11 +49,9 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
     { id: 1, type: 'math', question: 'If you have 3 apples and give away 1, how many do you have left?', answer: '2' },
     { id: 2, type: 'puzzle', question: 'What comes after Monday?', answer: 'tuesday' },
     { id: 3, type: 'math', question: 'How many minutes are in one hour?', answer: '60' },
-    { id: 4, type: 'puzzle', question: 'What color do you get when you mix red and yellow?', answer: 'orange' },
-    { id: 5, type: 'math', question: 'What is 10 + 5?', answer: '15' },
-    { id: 6, type: 'puzzle', question: 'How many days are in a week?', answer: '7' },
-    { id: 7, type: 'math', question: 'What is 20 - 8?', answer: '12' },
-    { id: 8, type: 'puzzle', question: 'What season comes after winter?', answer: 'spring' }
+    { id: 4, type: 'math', question: 'What is 10 + 5?', answer: '15' },
+    { id: 5, type: 'puzzle', question: 'How many days are in a week?', answer: '7' },
+    { id: 6, type: 'math', question: 'What is 20 - 8?', answer: '12' },
   ];
 
   const generatePopup = () => {
@@ -80,22 +79,52 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
     }
   };
 
+  // Start the challenge automatically on mount and schedule first popup after 5s
   useEffect(() => {
-    if (isActive) {
-      intervalRef.current = setInterval(() => {
-        generatePopup();
-      }, 5000);
+    setIsActive(true);
 
-      // Generate first popup after 2 seconds
-      setTimeout(generatePopup, 2000);
+    if (!currentPopup && !timeoutRef.current) {
+      timeoutRef.current = setTimeout(() => {
+        generatePopup();
+        timeoutRef.current = null;
+      }, 5000);
     }
 
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
       }
     };
-  }, [isActive]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // When popup closes (currentPopup becomes null) and challenge is active, start a new 5s timer
+  useEffect(() => {
+    if (!isActive) {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+      return;
+    }
+
+    if (currentPopup) {
+      // Ensure no timer is running while popup is open
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+      return;
+    }
+
+    // No popup open – schedule next one after 5s
+    if (!timeoutRef.current) {
+      timeoutRef.current = setTimeout(() => {
+        generatePopup();
+        timeoutRef.current = null;
+      }, 5000);
+    }
+  }, [currentPopup, isActive]);
 
   // Removed auto-close timer - popup only closes when answered correctly
 
@@ -136,6 +165,10 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
     setIsActive(false);
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
+    }
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
     }
 
     try {
@@ -331,7 +364,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
 
         {/* Popup Overlay */}
         {currentPopup && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 popup-enter">
+          <div style={{marginTop: '-16px'}} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 popup-enter">
             <Card className="w-96 mx-4 animate-bounce-in">
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg">
