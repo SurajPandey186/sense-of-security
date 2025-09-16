@@ -1,18 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { timeEnd } from "console";
 
 interface HearingSectionProps {
   onPasswordSubmit: (password: string) => void;
 }
 
 const HearingSection = ({ onPasswordSubmit }: HearingSectionProps) => {
+  const [enable, setEnable] = useState(true);
   const [password, setPassword] = useState("");
   const [showHint, setShowHint] = useState(false);
 
-  const correctPassword = "ACCESS";
+  const correctPassword = "BANANA";
+
+  useEffect(() => {
+    const timeOut = setTimeout(() => {
+      setEnable(false);
+    }, 1000 * 30);
+
+    return () => {
+      clearTimeout(timeOut);
+    }
+  }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,28 +58,17 @@ const HearingSection = ({ onPasswordSubmit }: HearingSectionProps) => {
 
         <div className="relative bg-black rounded-lg overflow-hidden aspect-video">
           <video
-            className="w-full h-full object-cover"
-            muted
-            controls={false}
-            autoPlay
             loop
+            muted
+            autoPlay
             playsInline
-          >
-            {/* We'll create a simple video element - in a real workshop, you'd have an actual lip-reading video */}
-            <source src="" type="video/mp4" />
-          </video>
-          
-          {/* Simulated video overlay */}
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-900">
-            <div className="text-center text-white">
-              <div className="text-6xl mb-4">🎭</div>
-              <p className="text-lg mb-2">Person speaking (lips moving):</p>
-              <p className="text-2xl font-mono tracking-wider">"A-C-C-E-S-S"</p>
-              <p className="text-sm mt-4 text-gray-300">
-                (In a real workshop, this would be a video of someone speaking the password)
-              </p>
-            </div>
-          </div>
+            src="/movie.mp4"
+            controls={false}
+            disablePictureInPicture
+            className="w-full h-full object-cover rotate-smoothly"
+            controlsList="nodownload noplaybackrate noremoteplayback nofullscreen"
+            aria-label="Lip reading practice video without audio or captions"
+          />
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -88,6 +89,7 @@ const HearingSection = ({ onPasswordSubmit }: HearingSectionProps) => {
             <Button
               type="button"
               variant="outline"
+              disabled={enable}
               onClick={() => setShowHint(!showHint)}
             >
               {showHint ? "Hide" : "Show"} Hint
@@ -99,9 +101,12 @@ const HearingSection = ({ onPasswordSubmit }: HearingSectionProps) => {
         </form>
 
         {showHint && (
-          <div className="p-4 bg-muted rounded-lg animate-bounce-in">
+          <div className="p-4 bg-muted rounded-lg animate-bounce-in space-y-2">
             <p className="text-sm">
-              <strong>Hint:</strong> Look carefully at the mouth movements. The word is related to gaining entry.
+              <strong>Hint 1:</strong> You peel me, you eat me, I’m yellow when smug — what am I?
+            </p>
+            <p className="text-sm">
+              <strong>Hint 2:</strong> Green turns to gold as I ripen in a bunch; who am I, in a lunch?
             </p>
           </div>
         )}
