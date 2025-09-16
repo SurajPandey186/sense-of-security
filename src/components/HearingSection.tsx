@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { timeEnd } from "console";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TooltipArrow } from "@/components/ui/tooltip";
 
 interface HearingSectionProps {
   onPasswordSubmit: (password: string) => void;
@@ -86,14 +86,28 @@ const HearingSection = ({ onPasswordSubmit }: HearingSectionProps) => {
           </div>
           
           <div className="flex justify-between items-center">
-            <Button
-              type="button"
-              variant="outline"
-              disabled={enable}
-              onClick={() => setShowHint(!showHint)}
-            >
-              {showHint ? "Hide" : "Show"} Hint
-            </Button>
+            <TooltipProvider>
+              <Tooltip delayDuration={0} open={enable} defaultOpen={enable}>
+                <TooltipTrigger asChild>
+                  <span className={`${enable ? 'cursor-not-allowed' : ''} inline-block`}>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      disabled={enable}
+                      onClick={() => setShowHint(!showHint)}
+                    >
+                      {showHint ? "Hide" : "Show"} Hint
+                    </Button>
+                  </span>
+                </TooltipTrigger>
+                {enable && (
+                  <TooltipContent side="right">
+                    Hints will be enabled in 30 seconds
+                    <TooltipArrow />
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
             <Button type="submit" variant="workshop">
               Submit Password
             </Button>
