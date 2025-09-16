@@ -264,6 +264,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
                     onChange={(e) => handleFormChange('firstName', e.target.value)}
                     placeholder="Enter your first name"
                     className={errors.firstName ? "border-red-500" : ""}
+                    autoComplete="off"
                   />
                   {errors.firstName && <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>}
                 </div>
@@ -277,6 +278,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
                     onChange={(e) => handleFormChange('lastName', e.target.value)}
                     placeholder="Enter your last name"
                     className={errors.lastName ? "border-red-500" : ""}
+                    autoComplete="off"
                   />
                   {errors.lastName && <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>}
                 </div>
@@ -291,6 +293,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
                   onChange={(e) => handleFormChange('email', e.target.value)}
                   placeholder="Enter your email address"
                   className={errors.email ? "border-red-500" : ""}
+                  autoComplete="off"
                 />
                 {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
               </div>
@@ -307,6 +310,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
                     onChange={(e) => handleFormChange('batteryLevel', e.target.value)}
                     placeholder="Enter percentage (0-100)"
                     className={errors.batteryLevel ? "border-red-500" : ""}
+                    autoComplete="off"
                   />
                   {errors.batteryLevel && <p className="text-red-500 text-xs mt-1">{errors.batteryLevel}</p>}
                 </div>
@@ -319,6 +323,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
                     value={formData.emoji}
                     onChange={(e) => handleFormChange('emoji', e.target.value)}
                     placeholder="Enter your emoji"
+                    autoComplete="off"
                   />
                 </div>
               </div>
@@ -331,6 +336,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
                   onChange={(e) => handleFormChange('specialTalent', e.target.value)}
                   placeholder="Tell us about your special talent"
                   rows={3}
+                  autoComplete="off"
                 />
               </div>
 
@@ -342,6 +348,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
                   onChange={(e) => handleFormChange('changeWorld', e.target.value)}
                   placeholder="What would you change in the world?"
                   rows={3}
+                  autoComplete="off"
                 />
               </div>
 
@@ -369,6 +376,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
                     onChange={(e) => handleFormChange('feedback', e.target.value)}
                     placeholder="Share your feedback"
                     rows={3}
+                    autoComplete="off"
                   />
                 </div>
               </div>
