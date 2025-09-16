@@ -148,7 +148,7 @@ const Leaderboard = () => {
                           📧 {entry.email}
                         </p>
                         <p className="text-sm text-muted-foreground flex items-center gap-1">
-                          🏆 Score: <span className="font-semibold">{entry.cognitive_score || entry.score || 0}</span>
+                          🏆 Score: <span className="font-semibold">{entry.cognitive_score || 0}</span>
                         </p>
                         <p className="text-xs text-muted-foreground">
                           ⏰ {new Date(entry.created_at).toLocaleString()}

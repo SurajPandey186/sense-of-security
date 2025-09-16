@@ -88,7 +88,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
       timeoutRef.current = setTimeout(() => {
         generatePopup();
         timeoutRef.current = null;
-      }, 5000);
+      }, 10000);
     }
 
     return () => {
@@ -118,12 +118,12 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
       return;
     }
 
-    // No popup open – schedule next one after 5s
+    // No popup open – schedule next one after 10s
     if (!timeoutRef.current) {
       timeoutRef.current = setTimeout(() => {
         generatePopup();
         timeoutRef.current = null;
-      }, 5000);
+      }, 10000);
     }
   }, [currentPopup, isActive]);
 
@@ -189,8 +189,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
           world_change: formData.changeWorld,
           session_rating: formData.likingSession,
           session_feedback: formData.feedback,
-          cognitive_score: score,
-          score: score // Keep score for compatibility
+          cognitive_score: score
         }]);
 
       if (error) throw error;
@@ -242,7 +241,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
               Start Cognitive Challenge
             </Button>
             <p className="text-sm text-muted-foreground mt-2">
-              Questions will pop up every 5 seconds - you must answer correctly to continue
+              Questions will pop up every 10 seconds - you must answer correctly to continue
             </p>
           </div>
         ) : (
