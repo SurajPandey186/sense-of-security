@@ -149,6 +149,9 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
       newErrors.batteryLevel = "Please enter a valid percentage (0-100)";
     }
     if (!formData.likingSession.trim()) newErrors.likingSession = "Please select an option";
+    if (!formData.feedback.trim() || formData.feedback.trim().length < 100) {
+      newErrors.feedback = "Feedback must be at least 100 characters";
+    }
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -253,7 +256,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="firstName">First Name *</Label>
@@ -377,7 +380,10 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
                     placeholder="Share your feedback"
                     rows={3}
                     autoComplete="off"
+                    minLength={100}
+                    className={errors.feedback ? "border-red-500" : ""}
                   />
+                  {errors.feedback && <p className="text-red-500 text-xs mt-1">{errors.feedback}</p>}
                 </div>
               </div>
 
@@ -408,6 +414,7 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
                   placeholder="Your answer..."
                   className="popup-input"
                   autoFocus
+                  autoComplete="off"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       submitPopupAnswer();
