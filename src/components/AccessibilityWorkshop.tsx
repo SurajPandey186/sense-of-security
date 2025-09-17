@@ -127,12 +127,6 @@ const AccessibilityWorkshop = () => {
           <div aria-hidden={true} className="flex items-center justify-between mb-4">
             <h1 className="text-2xl font-bold">BlindFolded WorkShop</h1>
             <div className="flex items-center gap-4">
-              <Link to="/leaderboard">
-                <Button variant="outline" size="sm" className="flex items-center gap-2">
-                  <Trophy className="h-4 w-4" />
-                  Leaderboard
-                </Button>
-              </Link>
               <span className="text-sm text-muted-foreground">
                 {completedSections.length}/{sections.length} completed
               </span>

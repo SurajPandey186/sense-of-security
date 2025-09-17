@@ -14,6 +14,7 @@ const MotorSection = ({ onPasswordSubmit }: MotorSectionProps) => {
   const [currentFocus, setCurrentFocus] = useState(0);
   const [isMouseDisabled, setIsMouseDisabled] = useState(false);
   const [visitedElements, setVisitedElements] = useState<number[]>([]);
+  const [revealedLetters, setRevealedLetters] = useState<Set<number>>(new Set());
   const [correctPassword] = useState<string>(() => {
     const idx = Math.floor(Math.random() * commonPasswords.length);
     return commonPasswords[idx].toUpperCase();
@@ -62,9 +63,8 @@ const MotorSection = ({ onPasswordSubmit }: MotorSectionProps) => {
       if (e.key === "Enter" || e.key === " ") {
         const focusedElement = document.getElementById(focusableElements[currentFocus]);
         if (focusedElement?.classList.contains('hidden-letter')) {
-          focusedElement.classList.add('revealed');
-          focusedElement.style.backgroundColor = 'hsl(var(--success))';
-          focusedElement.style.color = 'white';
+          const letterIndex = parseInt(focusedElement.id.split('-')[2]) - 1;
+          revealLetter(letterIndex);
         }
       }
     };
@@ -72,6 +72,16 @@ const MotorSection = ({ onPasswordSubmit }: MotorSectionProps) => {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isMouseDisabled, currentFocus]);
+
+  const revealLetter = (index: number) => {
+    setRevealedLetters(prev => new Set([...prev, index]));
+    const element = document.getElementById(`hidden-letter-${index + 1}`);
+    if (element) {
+      element.classList.add('revealed');
+      element.style.backgroundColor = 'hsl(var(--success))';
+      element.style.color = 'white';
+    }
+  };
 
   const enableKeyboardMode = () => {
     setIsMouseDisabled(true);
@@ -129,7 +139,7 @@ const MotorSection = ({ onPasswordSubmit }: MotorSectionProps) => {
           </div>
         ) : (
           <>
-            <div className="p-4 bg-muted rounded-lg">
+            <div className="p-4 bg-muted rounded-lg text-center">
               <p className="text-sm font-semibold mb-2">🎯 Instructions:</p>
               <ul className="text-sm space-y-1 text-muted-foreground">
                 <li>• Use <kbd className="px-1 bg-background rounded">Tab</kbd> to navigate between elements</li>
@@ -140,8 +150,8 @@ const MotorSection = ({ onPasswordSubmit }: MotorSectionProps) => {
             </div>
 
             {/* Hidden letter grid */}
-            <div className="grid grid-cols-4 gap-4 p-6 bg-muted/50 rounded-lg">
-              <div className="col-span-4 text-center mb-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 p-6 bg-muted/50 rounded-lg">
+              <div className="col-span-2 lg:col-span-4 text-center mb-4">
                 <h3 className="font-semibold">Find the hidden letters (Tab to navigate, Enter/Space to reveal)</h3>
               </div>
               
@@ -151,11 +161,12 @@ const MotorSection = ({ onPasswordSubmit }: MotorSectionProps) => {
                     id={`hidden-letter-${index + 1}`}
                     className="hidden-letter keyboard-focusable w-16 h-16 border-2 border-primary bg-background rounded-lg 
                              focus:ring-2 focus:ring-primary focus:bg-primary focus:text-primary-foreground
-                             hover:bg-primary hover:text-primary-foreground transition-colors"
+                             hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
                     tabIndex={0}
+                    onClick={() => revealLetter(index)}
                   >
                     <span className="sr-only">Hidden letter {index + 1}: {letter}</span>
-                    <span className="invisible revealed-letter">{letter}</span>
+                    <span className={`${revealedLetters.has(index) ? 'visible' : 'invisible'} revealed-letter`}>{letter}</span>
                   </button>
                 </div>
               ))}
