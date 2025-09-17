@@ -14,7 +14,7 @@ const HearingSection = ({ onPasswordSubmit }: HearingSectionProps) => {
   const [password, setPassword] = useState("");
   const [showHint, setShowHint] = useState(false);
 
-  const correctPassword = "BANANA";
+  const correctPassword = "COMPLEX";
 
   useEffect(() => {
     const timeOut = setTimeout(() => {
@@ -28,7 +28,7 @@ const HearingSection = ({ onPasswordSubmit }: HearingSectionProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password.toUpperCase() === correctPassword) {
+    if (password.toLowerCase() === correctPassword.toLowerCase()) {
       onPasswordSubmit(password);
     } else {
       // Shake animation for wrong password
@@ -62,7 +62,7 @@ const HearingSection = ({ onPasswordSubmit }: HearingSectionProps) => {
             muted
             autoPlay
             playsInline
-            src="/movie.mp4"
+            src="/movie2.mp4"
             controls={false}
             disablePictureInPicture
             className="w-full h-full object-cover rotate-smoothly"
@@ -85,8 +85,8 @@ const HearingSection = ({ onPasswordSubmit }: HearingSectionProps) => {
             />
           </div>
           
-          <div className="flex justify-between items-center">
-            <TooltipProvider>
+          <div className="flex justify-center items-center">
+            {/* <TooltipProvider>
               <Tooltip delayDuration={0} open={enable} defaultOpen={enable}>
                 <TooltipTrigger asChild>
                   <span className={`${enable ? 'cursor-not-allowed' : ''} inline-block`}>
@@ -107,14 +107,14 @@ const HearingSection = ({ onPasswordSubmit }: HearingSectionProps) => {
                   </TooltipContent>
                 )}
               </Tooltip>
-            </TooltipProvider>
+            </TooltipProvider> */}
             <Button type="submit" variant="workshop">
               Submit Password
             </Button>
           </div>
         </form>
 
-        {showHint && (
+        {/* {showHint && (
           <div className="p-4 bg-muted rounded-lg animate-bounce-in space-y-2">
             <p className="text-sm">
               <strong>Hint 1:</strong> You peel me, you eat me, I’m yellow when smug — what am I?
@@ -123,7 +123,7 @@ const HearingSection = ({ onPasswordSubmit }: HearingSectionProps) => {
               <strong>Hint 2:</strong> Green turns to gold as I ripen in a bunch; who am I, in a lunch?
             </p>
           </div>
-        )}
+        )} */}
 
         <div className="text-xs text-muted-foreground">
           <p>💡 <strong>Learning:</strong> People who are deaf or hard of hearing rely on lip reading, sign language, and visual cues.</p>

@@ -28,7 +28,7 @@ const VisionSection = ({ onPasswordSubmit }: VisionSectionProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password.toUpperCase() === correctPassword) {
+    if (password.toLowerCase() === correctPassword.toLowerCase()) {
       onPasswordSubmit(password);
     } else {
       const input = document.querySelector('.vision-password-input');
@@ -49,7 +49,7 @@ const VisionSection = ({ onPasswordSubmit }: VisionSectionProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="text-center" aria-hidden="true">
+        <div className="text-left" aria-hidden="true">
           <p className="text-muted-foreground mb-4" aria-hidden="true">
             Use Screen Reader to navigate to the content below. The password is hidden in poor contrast text.
           </p>
@@ -59,6 +59,8 @@ const VisionSection = ({ onPasswordSubmit }: VisionSectionProps) => {
               • <strong>Windows:</strong> Press Windows + Ctrl + Enter to start Narrator<br/>
               • <strong>Mac:</strong> Press Command + F5 to start VoiceOver<br/>
               • <strong>Chrome:</strong> Install ChromeVox extension<br/>
+              • <strong>Android Mobile:</strong> Settings ➡️ Accessibility ➡️ TalkBack and toggle it on<br/>
+              • <strong>IOS Mobile:</strong> Settings ➡️ Accessibility ➡️ VoiceOver and toggle it on<br/>
               • Use Tab and Arrow keys to navigate through the content below
             </p>
           </div>

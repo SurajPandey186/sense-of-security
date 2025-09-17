@@ -82,7 +82,7 @@ const MotorSection = ({ onPasswordSubmit }: MotorSectionProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password.toUpperCase() === correctPassword) {
+    if (password.toLowerCase() === correctPassword.toLowerCase()) {
       document.body.classList.remove('mouse-disabled');
       onPasswordSubmit(password);
     } else {
