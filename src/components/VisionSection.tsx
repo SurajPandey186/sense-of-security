@@ -75,17 +75,9 @@ const VisionSection = ({ onPasswordSubmit }: VisionSectionProps) => {
               affects users with visual impairments including low vision, color blindness, and other conditions.
             </p>
             <p>
-              Many websites fail to meet WCAG contrast requirements, making content difficult or impossible to read.
-              The minimum contrast ratio should be 4.5:1 for normal text and 3:1 for large text.
-            </p>
-            <p>
               <VisuallyHidden>Your password is: {correctPassword.toUpperCase()}</VisuallyHidden>
               The password for this section is hidden somewhere in this text but you cannot see it due to 
               the poor contrast. This demonstrates why proper contrast ratios are essential for accessibility.
-            </p>
-            <p>
-              Users with visual impairments rely on screen readers, magnification software, and proper 
-              contrast to navigate digital content effectively.
             </p>
           </div>
         </div>
