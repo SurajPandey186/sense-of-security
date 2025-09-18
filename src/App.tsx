@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Suspense, lazy } from "react";
-import Loading from "./components/ui/loading";
+import Loading from "@/components/ui/Loading";
 
 // Lazy load pages
 const Index = lazy(() => import("./pages/Index"));
