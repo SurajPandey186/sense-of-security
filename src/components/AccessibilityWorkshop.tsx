@@ -102,12 +102,12 @@ const AccessibilityWorkshop = () => {
               </ul>
             </div>
 
-            <div className="flex gap-4 justify-center">
-              <Button variant="workshop" onClick={resetWorkshop} size="lg">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button variant="workshop" onClick={resetWorkshop} size="lg" className="w-full sm:w-auto">
                 Restart Workshop
               </Button>
-              <Link to="/leaderboard">
-                <Button variant="outline" size="lg" className="flex items-center gap-2">
+              <Link to="/leaderboard" className="w-full sm:w-auto">
+                <Button variant="outline" size="lg" className="flex items-center gap-2 w-full sm:w-auto">
                   <Trophy className="h-4 w-4" />
                   View Leaderboard
                 </Button>

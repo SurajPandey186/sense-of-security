@@ -53,7 +53,7 @@ const VisionSection = ({ onPasswordSubmit }: VisionSectionProps) => {
           <p className="text-muted-foreground mb-4" aria-hidden="true">
             Use Screen Reader to navigate to the content below. The password is hidden in poor contrast text.
           </p>
-          <div className="bg-muted text-center p-4 rounded-lg" aria-hidden="true">
+          <div className="bg-muted text-left p-4 rounded-lg" aria-hidden="true">
             <p className="text-sm text-muted-foreground" aria-hidden="true">
               <strong>💡 How to enable screen reader:</strong><br/>
               • <strong>Windows:</strong> Press Windows + Ctrl + Enter to start Narrator<br/>
