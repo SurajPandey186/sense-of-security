@@ -75,7 +75,9 @@ const VisionSection = ({ onPasswordSubmit }: VisionSectionProps) => {
               affects users with visual impairments including low vision, color blindness, and other conditions.
             </p>
             <p>
-              <VisuallyHidden>Your password is: {correctPassword.toUpperCase()}</VisuallyHidden>
+               <VisuallyHidden>Your password is: {correctPassword.toUpperCase()}</VisuallyHidden>
+            </p>
+            <p>
               The password for this section is hidden somewhere in this text but you cannot see it due to 
               the poor contrast. This demonstrates why proper contrast ratios are essential for accessibility.
             </p>
