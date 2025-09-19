@@ -157,6 +157,21 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const checkEmailExists = async (email: string) => {
+    const { data, error } = await supabase
+      .from('leaderboard')
+      .select('email')
+      .eq('email', email.toLowerCase().trim())
+      .limit(1);
+
+    if (error) {
+      console.error('Error checking email:', error);
+      return false;
+    }
+
+    return data && data.length > 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -180,12 +195,27 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
     }
 
     try {
+      // Check if email already exists
+      const emailExists = await checkEmailExists(formData.email);
+      
+      if (emailExists) {
+        toast({
+          title: "Already Played!",
+          description: "This email has already been used to play the game. Each email can only be used once.",
+          variant: "destructive",
+        });
+        // Re-enable the challenge
+        setIsActive(true);
+        setIsSubmitting(false);
+        return;
+      }
+
       // Store form data in Supabase
       const { error } = await supabase
         .from('leaderboard')
         .insert([{
           name: `${formData.firstName} ${formData.lastName}`,
-          email: formData.email,
+          email: formData.email.toLowerCase().trim(),
           battery_level: parseInt(formData.batteryLevel),
           favorite_emoji: formData.emoji,
           special_talent: formData.specialTalent,
