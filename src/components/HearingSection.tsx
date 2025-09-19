@@ -62,7 +62,7 @@ const HearingSection = ({ onPasswordSubmit }: HearingSectionProps) => {
             muted
             autoPlay
             playsInline
-            src="/movie2.mp4"
+            src="https://videos.ctfassets.net/hfn58sr2ufo8/1hdjJ3JUBEgNuC8c5xjf6O/cf347cb1fc85374a7514eac206a434cb/My_Movie_-_comressed__1_.mp4"
             controls={false}
             disablePictureInPicture
             className="w-full h-full object-cover rotate-smoothly"
