@@ -56,9 +56,8 @@ const VisionSection = ({ onPasswordSubmit }: VisionSectionProps) => {
           <div className="bg-muted text-left p-4 rounded-lg" aria-hidden="true">
             <p className="text-sm text-muted-foreground" aria-hidden="true">
               <strong>💡 How to enable screen reader:</strong><br/>
-              • <strong>Windows:</strong> Press Windows + Ctrl + Enter to start Narrator<br/>
-              • <strong>Mac:</strong> Press Command + F5 to start VoiceOver<br/>
-              • <strong>Chrome:</strong> Install ChromeVox extension<br/>
+              • <strong>Windows:</strong> Press Windows + Ctrl + Enter to start Narrator, then press Caps Lock + M to read the entire screen<br/>
+              • <strong>Mac:</strong> Press Command + F5 to start VoiceOver, then press Control + Option + A to read the entire screen<br/>
               • <strong>Android Mobile:</strong> Settings ➡️ Accessibility ➡️ TalkBack and toggle it on<br/>
               • <strong>IOS Mobile:</strong> Settings ➡️ Accessibility ➡️ VoiceOver and toggle it on<br/>
               • Use Tab and Arrow keys to navigate through the content below
