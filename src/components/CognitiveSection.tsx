@@ -157,19 +157,40 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const checkEmailExists = async (email: string) => {
-    const { data, error } = await supabase
-      .from('leaderboard')
-      .select('email')
-      .eq('email', email.toLowerCase().trim())
-      .limit(1);
+  const checkEmailExists = async (email: string, retries = 3): Promise<{ exists: boolean; error?: string }> => {
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        const { data, error } = await supabase
+          .from('leaderboard')
+          .select('email')
+          .eq('email', email.toLowerCase().trim())
+          .limit(1);
 
-    if (error) {
-      console.error('Error checking email:', error);
-      return false;
+        if (error) {
+          // If it's the last attempt, throw the error
+          if (attempt === retries) {
+            throw error;
+          }
+          // Wait before retry (exponential backoff)
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+          continue;
+        }
+
+        return { exists: data && data.length > 0 };
+      } catch (error) {
+        if (attempt === retries) {
+          console.error('Error checking email after retries:', error);
+          return { 
+            exists: false, 
+            error: 'Unable to verify email. Please check your connection and try again.' 
+          };
+        }
+        // Wait before retry
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+      }
     }
-
-    return data && data.length > 0;
+    
+    return { exists: false, error: 'Network error occurred' };
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -195,23 +216,45 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
     }
 
     try {
-      // Check if email already exists
-      const emailExists = await checkEmailExists(formData.email);
-      
-      if (emailExists) {
+      // Check network connectivity
+      if (!navigator.onLine) {
         toast({
-          title: "Already Played!",
-          description: "This email has already been used to play the game. Each email can only be used once.",
+          title: "No Internet Connection",
+          description: "Please check your internet connection and try again.",
           variant: "destructive",
         });
-        // Re-enable the challenge
         setIsActive(true);
         setIsSubmitting(false);
         return;
       }
 
-      // Store form data in Supabase
-      const { error } = await supabase
+      // Check if email already exists
+      const emailCheckResult = await checkEmailExists(formData.email);
+      
+      if (emailCheckResult.error) {
+        toast({
+          title: "Connection Error",
+          description: emailCheckResult.error,
+          variant: "destructive",
+        });
+        setIsActive(true);
+        setIsSubmitting(false);
+        return;
+      }
+      
+      if (emailCheckResult.exists) {
+        toast({
+          title: "Already Played!",
+          description: "This email has already been used to play the game. Each email can only be used once.",
+          variant: "destructive",
+        });
+        setIsActive(true);
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Store form data in Supabase with timeout
+      const insertPromise = supabase
         .from('leaderboard')
         .insert([{
           name: `${formData.firstName} ${formData.lastName}`,
@@ -225,6 +268,13 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
           cognitive_score: score
         }]);
 
+      // Add timeout for database operation
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Request timeout')), 30000);
+      });
+
+      const { error } = await Promise.race([insertPromise, timeoutPromise]) as any;
+
       if (error) throw error;
 
       toast({
@@ -233,13 +283,33 @@ const CognitiveSection = ({ onPasswordSubmit }: CognitiveSectionProps) => {
       });
 
       onPasswordSubmit('COMPLETED');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting form:', error);
+      
+      let errorTitle = "Submission Failed";
+      let errorDescription = "Please try again.";
+      
+      // Provide specific error messages based on error type
+      if (error?.message === 'Request timeout') {
+        errorTitle = "Request Timeout";
+        errorDescription = "The submission took too long. Please check your connection and try again.";
+      } else if (error?.message?.includes('network') || !navigator.onLine) {
+        errorTitle = "Network Error";
+        errorDescription = "Please check your internet connection and try again.";
+      } else if (error?.message?.includes('duplicate') || error?.code === '23505') {
+        errorTitle = "Duplicate Entry";
+        errorDescription = "This email has already been used. Each email can only be used once.";
+      } else if (error?.message?.includes('invalid') || error?.code?.startsWith('22')) {
+        errorTitle = "Invalid Data";
+        errorDescription = "Please check your form data and try again.";
+      }
+      
       toast({
-        title: "Error",
-        description: "Failed to submit form. Please try again.",
+        title: errorTitle,
+        description: errorDescription,
         variant: "destructive",
       });
+      
       // Re-enable the challenge if submission failed
       setIsActive(true);
     } finally {

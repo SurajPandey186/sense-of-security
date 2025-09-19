@@ -26,25 +26,48 @@ const Leaderboard = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  // Fetch leaderboard data
-  const fetchLeaderboard = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('leaderboard')
-        .select('*')
-        .order('created_at', { ascending: true }); // First submission at top
+  // Fetch leaderboard data with retry logic
+  const fetchLeaderboard = async (retries = 3) => {
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        if (!navigator.onLine) {
+          throw new Error('No internet connection');
+        }
 
-      if (error) throw error;
-      setEntries(data || []);
-    } catch (error) {
-      console.error('Error fetching leaderboard:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load leaderboard data",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
+        const { data, error } = await supabase
+          .from('leaderboard')
+          .select('*')
+          .order('created_at', { ascending: true });
+
+        if (error) throw error;
+        setEntries(data || []);
+        return;
+      } catch (error: any) {
+        console.error(`Error fetching leaderboard (attempt ${attempt}):`, error);
+        
+        if (attempt === retries) {
+          let errorTitle = "Loading Error";
+          let errorDescription = "Failed to load leaderboard data";
+          
+          if (error?.message?.includes('network') || error?.message?.includes('internet')) {
+            errorTitle = "Connection Error";
+            errorDescription = "Please check your internet connection and try again.";
+          }
+          
+          toast({
+            title: errorTitle,
+            description: errorDescription,
+            variant: "destructive",
+          });
+        } else {
+          // Wait before retry (exponential backoff)
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        }
+      } finally {
+        if (attempt === retries) {
+          setLoading(false);
+        }
+      }
     }
   };
 
