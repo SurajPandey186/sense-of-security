@@ -161,7 +161,7 @@ const MotorSection = ({ onPasswordSubmit }: MotorSectionProps) => {
                     id={`hidden-letter-${index + 1}`}
                     className="hidden-letter keyboard-focusable w-16 h-16 border-2 border-primary bg-background rounded-lg 
                              focus:ring-2 focus:ring-primary focus:bg-primary focus:text-primary-foreground
-                             hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
+                             hover:bg-primary hover:text-primary-foreground transition-colors"
                     tabIndex={0}
                     onClick={() => revealLetter(index)}
                   >
