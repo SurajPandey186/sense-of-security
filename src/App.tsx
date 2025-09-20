@@ -20,7 +20,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <ErrorBoundary>
-        <div className="min-h-screen w-screen no-scrollbar overflow-x-hidden overflow-y-auto bg-background">
+        <div className="min-h-screen w-full overflow-x-hidden overflow-y-auto bg-background">
           <BrowserRouter>
             <Suspense fallback={
               <div className="min-h-[calc(100vh-128px)] flex items-center justify-center">

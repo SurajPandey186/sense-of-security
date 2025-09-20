@@ -163,9 +163,14 @@
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
+* {
+  @apply border-border;
+}
+
+html, body {
+  @apply overflow-x-hidden;
+  max-width: 100vw;
+}
 
   body {
     @apply bg-background text-foreground;
